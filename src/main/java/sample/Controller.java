@@ -17,17 +17,8 @@ public class Controller {
 
 	@RequestMapping("/")
 	@ResponseBody
-	public String test(
+	public void test(
 			@RequestParam(name = "testParam", required = false) String param) {
-		Platform.runLater(() -> {
-			setLabel("test");
-			System.out.println(java.lang.Thread.currentThread() + "param: " + param);
-		});
-		return "asd";
+		Platform.runLater(() -> label.setText(param.equals("1") ? "test" : ""));
 	}
-
-	public void setLabel(String txt) {
-		this.label.setText(txt);
-	}
-
 }
