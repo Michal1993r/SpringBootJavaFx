@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Component
@@ -14,26 +15,19 @@ public class Controller {
 	@FXML
 	private Label label;
 
-	private java.lang.Thread thread = getThreadByName("JavaFX Application Thread");
-
 	@RequestMapping("/")
 	@ResponseBody
-	public String test(){
+	public String test(
+			@RequestParam(name = "testParam", required = false) String param) {
 		Platform.runLater(() -> {
 			setLabel("test");
+			System.out.println(java.lang.Thread.currentThread() + "param: " + param);
 		});
 		return "asd";
 	}
 
-	public void setLabel(String txt){
+	public void setLabel(String txt) {
 		this.label.setText(txt);
-	}
-
-	public java.lang.Thread getThreadByName(String threadName) {
-		for (java.lang.Thread t : java.lang.Thread.getAllStackTraces().keySet()) {
-			if (t.getName().equals(threadName)) return t;
-		}
-		return null;
 	}
 
 }
