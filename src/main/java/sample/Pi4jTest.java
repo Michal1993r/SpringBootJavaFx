@@ -3,19 +3,23 @@ package sample;
 import com.pi4j.io.serial.*;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by pi on 12.11.16.
- */
+import java.io.IOException;
+
 @Service
 public class Pi4jTest {
 
     private com.pi4j.io.serial.Serial bluetooth;
     private SerialConfig serialConfig;
+    private String receivedData = "";
 
     public Pi4jTest() {
         bluetooth = SerialFactory.createInstance();
         bluetooth.addListener((SerialDataEventListener) serialDataEvent -> {
-
+            try {
+                receivedData = serialDataEvent.getAsciiString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         });
         try {
@@ -35,7 +39,7 @@ public class Pi4jTest {
         return bluetooth;
     }
 
-    public void setBluetooth(com.pi4j.io.serial.Serial bluetooth) {
-        this.bluetooth = bluetooth;
+    public String getReceivedData() {
+        return receivedData;
     }
 }
