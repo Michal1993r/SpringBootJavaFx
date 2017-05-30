@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -23,8 +26,8 @@ public class Controller {
 
     @RequestMapping("/gyroData")
     @ResponseBody
-    public String displayStats(){
-        return test.getReceivedData();
+    public List<String> displayStats(){
+        return Arrays.asList(test.getReceivedData().split(","));
     }
 
 }

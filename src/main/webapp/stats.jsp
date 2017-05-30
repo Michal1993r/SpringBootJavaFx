@@ -3,10 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="css/flightindicators.css" />
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJWOKUyatUHukA-qslSXXC_RuSvsuKgqI&callback=initMap">
     </script>
+    <script src="js/jquery.flightindicator.js"></script>
     <style>
         #map {
             height: 400px;
@@ -15,7 +17,7 @@
     </style>
 </head>
 <body>
-    <div id="gyro"></div>
+    <span id="attitude"></span>
     <div id="map"></div>
 </body>
 
@@ -24,12 +26,14 @@
 <script>
     var marker;
     var map;
+    var indicator = $.flightIndicator('#attitude', 'attitude');
     setInterval(function () {
         $.get("gyroData", function (response) {
-            $('#gyro').text(response);
-            var newPosition = new google.maps.LatLng(50.978500, 20.547611);
-            marker.setPosition(newPosition);
-            map.panTo(newPosition);
+            indicator.setRoll(response[0]);
+            indicator.setPitch(response[1]);
+//            var newPosition = new google.maps.LatLng(50.978500, 20.547611);
+//            marker.setPosition(newPosition);
+//            map.panTo(newPosition);
         });
     }, 100);
     function initMap() {
