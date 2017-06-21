@@ -26,11 +26,11 @@ public class Pi4jTest {
             serialConfig = new SerialConfig();
             serialConfig.device(SerialPort.getDefaultPort())
                     .baud(Baud._115200)
-            .dataBits(DataBits._8)
-            .parity(Parity.NONE)
-            .stopBits(StopBits._1);
+                    .dataBits(DataBits._8)
+                    .parity(Parity.NONE)
+                    .stopBits(StopBits._1);
             bluetooth.open(serialConfig);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -41,5 +41,9 @@ public class Pi4jTest {
 
     public String getReceivedData() {
         return receivedData;
+    }
+
+    public synchronized void sendCommand(String command) throws IOException {
+        bluetooth.write(command);
     }
 }
