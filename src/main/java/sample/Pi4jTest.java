@@ -11,12 +11,20 @@ public class Pi4jTest {
     private com.pi4j.io.serial.Serial bluetooth;
     private SerialConfig serialConfig;
     private String receivedData = "";
+    private String gpsData = "";
 
     public Pi4jTest() {
         bluetooth = SerialFactory.createInstance();
         bluetooth.addListener((SerialDataEventListener) serialDataEvent -> {
             try {
                 receivedData = serialDataEvent.getAsciiString();
+                if (receivedData.contains("$GPRMC")){
+                    gpsData = "";
+                    gpsData.concat(receivedData.substring(receivedData.indexOf('$')));
+                    while (!gpsData.contains("\r\n")){
+                        gpsData.concat(serialDataEvent.getAsciiString());
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -35,15 +43,15 @@ public class Pi4jTest {
         }
     }
 
-    public com.pi4j.io.serial.Serial getBluetooth() {
-        return bluetooth;
-    }
-
     public String getReceivedData() {
         return receivedData;
     }
 
-    public synchronized void sendCommand(String command) throws IOException {
+    public synchronized void sendCommand(char command) throws IOException {
         bluetooth.write(command);
+    }
+
+    public String getGpsData() {
+        return gpsData;
     }
 }

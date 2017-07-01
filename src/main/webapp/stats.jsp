@@ -63,6 +63,11 @@
 //            compass.setHeading(response[2]);
         });
     }, 100);
+    setInterval(function () {
+        $.get("gpsData", function (response) {
+
+        });
+    }, 1000);
     function locationsDiffer(oldPosition, newPosition) {
         return oldPosition.lat() != newPosition.lat() && oldPosition.lng() != newPosition.lng();
     }

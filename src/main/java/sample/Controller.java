@@ -23,12 +23,23 @@ public class Controller {
     @RequestMapping("/gyroData")
     @ResponseBody
     public List<String> displayStats() {
-//        try {
-//            test.sendCommand("*gyro#");
-//        } catch (IOException e) {
-//            e.printStackTrace();ł
-//        }
-        return Arrays.asList(test.getReceivedData().split(","));
+        try {
+            test.sendCommand('a');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Arrays.asList(test.getReceivedData().trim().split(","));
+    }
+
+    @RequestMapping("/gpsData")
+    @ResponseBody
+    public List<String> getGPS(){
+        try {
+            test.sendCommand('g');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Arrays.asList("");
     }
 
 }
