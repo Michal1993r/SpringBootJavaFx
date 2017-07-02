@@ -63,17 +63,15 @@
 //            compass.setHeading(response[2]);
         });
     }, 100);
-    setInterval(function () {
-        $.get("gpsData", function (response) {
-
-        });
-    }, 1000);
     function locationsDiffer(oldPosition, newPosition) {
         return oldPosition.lat() != newPosition.lat() && oldPosition.lng() != newPosition.lng();
     }
     setInterval(function () {
         var oldPosition = marker.getPosition();
-        var newPosition = new google.maps.LatLng(oldPosition.lat() + 0.1, oldPosition.lng() + 0.1);
+        var newPosition;
+        $.get("gpsData", function (response) {
+            newPosition = new google.maps.LatLng(response[0], response[1]);
+        });
         if (locationsDiffer(oldPosition, newPosition)) {
             points.push(newPosition);
         }

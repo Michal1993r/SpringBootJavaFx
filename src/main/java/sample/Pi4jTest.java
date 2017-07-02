@@ -12,23 +12,40 @@ public class Pi4jTest {
     private SerialConfig serialConfig;
     private String receivedData = "";
     private String gpsData = "";
+    private String gyroData = "";
+    private Boolean gpsInProgress = false;
 
     public Pi4jTest() {
         bluetooth = SerialFactory.createInstance();
         bluetooth.addListener((SerialDataEventListener) serialDataEvent -> {
-            try {
-                receivedData = serialDataEvent.getAsciiString();
-                if (receivedData.contains("$GPRMC")){
-                    gpsData = "";
-                    gpsData.concat(receivedData.substring(receivedData.indexOf('$')));
-                    while (!gpsData.contains("\r\n")){
-                        gpsData.concat(serialDataEvent.getAsciiString());
+            synchronized (this) {
+                try {
+                    receivedData = serialDataEvent.getAsciiString();
+                    if (gpsInProgress) {
+                        gpsInProgress = false;
+                        gpsData = "$GPRMC," + receivedData.substring(0, receivedData.indexOf("#"));
                     }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                    if (receivedData.contains("$GPRMC")) {
+                        gpsData = "";
+                        gpsInProgress = true;
+                        String tempData = receivedData.substring(receivedData.indexOf("$"));
+                        if (tempData.contains("\r\n")) {
+                            gpsData = tempData.substring(tempData.indexOf("$"), tempData.indexOf("\r"));
+                            gpsInProgress = false;
+                        }
+                    }
+                    if (receivedData.contains("#GYRO")) {
+                        gyroData = "";
+                        String tempData = receivedData.substring(receivedData.indexOf("O") + 1);
+                        if (tempData.contains("\r\n")) {
+                            gyroData = tempData.substring(0, tempData.indexOf("\r"));
+                        }
+                    }
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         });
         try {
             serialConfig = new SerialConfig();
@@ -43,8 +60,8 @@ public class Pi4jTest {
         }
     }
 
-    public String getReceivedData() {
-        return receivedData;
+    public String getGyroData() {
+        return gyroData;
     }
 
     public synchronized void sendCommand(char command) throws IOException {
