@@ -23,7 +23,7 @@ public class Pi4jTest {
                     receivedData = serialDataEvent.getAsciiString();
                     if (gpsInProgress) {
                         gpsInProgress = false;
-                        gpsData = "$GPRMC," + receivedData.substring(0, receivedData.indexOf("#"));
+                        gpsData = "$GPRMC," + receivedData.substring(0, receivedData.indexOf("\r"));
                     }
                     if (receivedData.contains("$GPRMC")) {
                         gpsData = "";

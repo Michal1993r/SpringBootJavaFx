@@ -51,46 +51,46 @@
     var marker;
     var map;
     var path;
-    var points = new Array();
+    var points = [];
     var attitudeIndicator = $.flightIndicator('#attitude', 'attitude');
-    var altitudeIndicator = $.flightIndicator('#altimeter', 'altimeter');
+//    var altitudeIndicator = $.flightIndicator('#altimeter', 'altimeter');
+    var airspeedIndicator = $.flightIndicator('#airspeed', 'altimeter');
     //    var compass = $.flightIndicator('#heading', 'heading');
     setInterval(function () {
         $.get("gyroData", function (response) {
             attitudeIndicator.setRoll(response[0]);
             attitudeIndicator.setPitch(response[1]);
-            altitudeIndicator.setAltitude(500);
 //            compass.setHeading(response[2]);
         });
     }, 100);
-    function locationsDiffer(oldPosition, newPosition) {
-        return oldPosition.lat() != newPosition.lat() && oldPosition.lng() != newPosition.lng();
-    }
+
     setInterval(function () {
         var oldPosition = marker.getPosition();
-        var newPosition;
+        var newPosition = new google.maps.LatLng();
         $.get("gpsData", function (response) {
+            console.log(response);
             newPosition = new google.maps.LatLng(response[0], response[1]);
+            if (response.size !== 0) {
+                points.push(newPosition);
+                marker.setPosition(newPosition);
+                map.setCenter(newPosition);
+                path.setMap(map);
+                path.setPath(points);
+                airspeedIndicator.setAirSpeed(response[2]);
+            }
         });
-        if (locationsDiffer(oldPosition, newPosition)) {
-            points.push(newPosition);
-        }
-        marker.setPosition(newPosition);
-        map.panTo(newPosition);
-        path.setPath(points);
-        path.setMap(map);
     }, 5000);
     function initMap() {
-        points.push(new google.maps.LatLng(50.978500, 20.547611));
+        var initPos = new google.maps.LatLng(50.978500, 20.547611);
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 18, //0-18
-            center: points[0],
+            center: initPos,
             disableDefaultUI: true,
             mapTypeControls: false,
             mapTypeId: 'hybrid'
         });
         marker = new google.maps.Marker({
-            position: points[0],
+            position: initPos,
             map: map,
             icon: 'img/drone_icon.svg'
         });
