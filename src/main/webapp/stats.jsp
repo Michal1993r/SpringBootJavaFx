@@ -40,7 +40,7 @@
     </div>
     <div id="map" class="col-md-5"></div>
     <div class="col-md-2 col-md-offset-1">
-        <span id="altimeter"></span>
+        <span id="airspeed"></span>
     </div>
 </div>
 </body>
@@ -53,19 +53,15 @@
     var path;
     var points = [];
     var attitudeIndicator = $.flightIndicator('#attitude', 'attitude');
-//    var altitudeIndicator = $.flightIndicator('#altimeter', 'altimeter');
-    var airspeedIndicator = $.flightIndicator('#airspeed', 'altimeter');
-    //    var compass = $.flightIndicator('#heading', 'heading');
+    var airspeedIndicator = $.flightIndicator('#airspeed', 'airspeed');
     setInterval(function () {
         $.get("gyroData", function (response) {
             attitudeIndicator.setRoll(response[0]);
             attitudeIndicator.setPitch(response[1]);
-//            compass.setHeading(response[2]);
         });
     }, 100);
 
     setInterval(function () {
-        var oldPosition = marker.getPosition();
         var newPosition = new google.maps.LatLng();
         $.get("gpsData", function (response) {
             console.log(response);
